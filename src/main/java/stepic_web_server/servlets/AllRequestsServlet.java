@@ -17,13 +17,13 @@ public class AllRequestsServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(AllRequestsServlet.class.getName());
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-        String result = "NO value";
+        IHandler handler = null;
+        Map<String, Object> pageVariables = createPageVariablesMap(request);
         try {
-            IHandler handler = HandlerFactory.getInstance(request.getPathInfo(), request.getParameterMap());
-            result = handler.getResult();
-        } catch (IllegalStateException e) {}
-        logger.info("RESULT");
-        logger.info(result);
+            handler = HandlerFactory.getInstance(request.getPathInfo(), pageVariables);
+        } catch (IllegalStateException e) {
+            handler = HandlerFactory.getDefaultInstance(pageVariables);
+        }
 //        Map<String, Object> data = handler.getData();
 
         /*
@@ -31,6 +31,8 @@ public class AllRequestsServlet extends HttpServlet {
         pageVariables.put("message", "");
         response.getWriter().println(buildTemplate("page.html", pageVariables));
         */
+        pageVariables.put("message", "");
+        response.getWriter().println(buildTemplate(handler.getTemplateFile(), handler.getVariables()));
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
     }
@@ -40,7 +42,6 @@ public class AllRequestsServlet extends HttpServlet {
         Map<String, Object> pageVariables = createPageVariablesMap(request);
 
         String message = request.getParameter("message");
-
         response.setContentType("text/html;charset=utf-8");
         if(message == null || message.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -62,7 +63,7 @@ public class AllRequestsServlet extends HttpServlet {
         pageVariables.put("pathInfo", request.getPathInfo());
         pageVariables.put("sessionId", request.getSession().getId());
         pageVariables.put("sessionId", request.getSession().getId());
-        pageVariables.put("parameters", request.getParameterMap().toString());
+        pageVariables.put("parameters", request.getParameterMap());
         return pageVariables;
     }
 }
