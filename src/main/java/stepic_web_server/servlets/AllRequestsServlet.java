@@ -1,5 +1,7 @@
 package stepic_web_server.servlets;
 
+import stepic_web_server.handlers.HandlerFactory;
+import stepic_web_server.handlers.IHandler;
 import stepic_web_server.templater.PageGenerator;
 
 import javax.servlet.ServletException;
@@ -9,13 +11,26 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class AllRequestsServlet extends HttpServlet {
+    private static final Logger logger = Logger.getLogger(AllRequestsServlet.class.getName());
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
+        String result = "NO value";
+        try {
+            IHandler handler = HandlerFactory.getInstance(request.getPathInfo(), request.getParameterMap());
+            result = handler.getResult();
+        } catch (IllegalStateException e) {}
+        logger.info("RESULT");
+        logger.info(result);
+//        Map<String, Object> data = handler.getData();
+
+        /*
         Map<String, Object> pageVariables = createPageVariablesMap(request);
         pageVariables.put("message", "");
         response.getWriter().println(buildTemplate("page.html", pageVariables));
+        */
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
     }
