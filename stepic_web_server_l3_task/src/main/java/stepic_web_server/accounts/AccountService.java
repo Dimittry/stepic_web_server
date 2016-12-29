@@ -1,5 +1,6 @@
 package stepic_web_server.accounts;
 
+import stepic_web_server.dataSets.UsersDataSet;
 import stepic_web_server.exceptions.DBException;
 import stepic_web_server.services.DBService;
 
@@ -13,20 +14,24 @@ public class AccountService {
         dbService = new DBService();
     }
 
-    public void addNewUser(UserProfile userProfile) {
-        loginToProfile.put(userProfile.getLogin(), userProfile);
+    public void addNewUser(UsersDataSet user) {
+        try {
+            dbService.addUser(user);
+        } catch (DBException e) {
+            e.printStackTrace();
+        }
     }
 
-    public long getUserByLogin(String login) {
-        long result = -1;
+    public UsersDataSet getUserByLogin(String login) {
+        UsersDataSet result = null;
         try {
-            result = dbService.getUserId(login);
+            result = dbService.getUserByName(login);
         } catch (DBException e) {
             e.printStackTrace();
         }
         return result;
     }
-
+/*
     public UserProfile getUserBySessionId(String sessionId) {
         return sessionIdToProfile.get(sessionId);
     }
@@ -38,4 +43,5 @@ public class AccountService {
     public void deleteSession(String sessionId) {
         sessionIdToProfile.remove(sessionId);
     }
+*/
 }

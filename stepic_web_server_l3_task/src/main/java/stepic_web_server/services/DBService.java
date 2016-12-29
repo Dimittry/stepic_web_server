@@ -65,12 +65,27 @@ public class DBService {
         }
     }
 
-    public long addUser(String name) throws DBException {
+    public UsersDataSet getUserByName(String name) throws DBException {
+        try {
+            Session session = sessionFactory.openSession();
+            UsersDAO dao = new UsersDAO(session);
+            UsersDataSet dataSet = dao.getUserByName(name);
+            session.close();
+            return dataSet;
+        } catch (HibernateException e) {
+            throw new DBException(e);
+        }
+    }
+
+    public long addUser(UsersDataSet user) throws DBException {
         try {
             Session session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
             UsersDAO dao = new UsersDAO(session);
-            long id = dao.insertUser(name);
+            UsersDataSet usersDataSet = dao.getUserByName(user.getName());
+            if(usersDataSet != null)
+                return -1;
+            long id = dao.insertUser(user);
             transaction.commit();
             session.close();
             return id;

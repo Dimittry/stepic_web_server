@@ -16,6 +16,9 @@ public class UsersDataSet implements Serializable {
     @Column(name = "name", unique = true, updatable = false)
     private String name;
 
+    @Column(name = "password")
+    private String password;
+
     public UsersDataSet() {
     }
 
@@ -27,6 +30,17 @@ public class UsersDataSet implements Serializable {
     public UsersDataSet(String name) {
         setId(-1);
         setName(name);
+        setPassword(name);
+    }
+
+    public UsersDataSet(String name, String password) {
+        setId(-1);
+        setName(name);
+        setPassword(password);
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setId(long id) {
@@ -35,6 +49,10 @@ public class UsersDataSet implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getName() {
@@ -46,7 +64,31 @@ public class UsersDataSet implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UsersDataSet dataSet = (UsersDataSet) o;
+
+        if (name != null ? !name.equals(dataSet.name) : dataSet.name != null) return false;
+        return password != null ? password.equals(dataSet.password) : dataSet.password == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
-        return String.format("UsersDataSet{id=%d, name='%s'}", id, name);
+        return "UsersDataSet{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

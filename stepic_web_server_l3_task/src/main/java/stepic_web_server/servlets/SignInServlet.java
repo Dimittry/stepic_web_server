@@ -3,6 +3,7 @@ package stepic_web_server.servlets;
 
 import stepic_web_server.accounts.AccountService;
 import stepic_web_server.accounts.UserProfile;
+import stepic_web_server.dataSets.UsersDataSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,18 +25,18 @@ public class SignInServlet extends HttpServlet {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
 
-        UserProfile userProfile = accountService.getUserByLogin(login);
-        if(userProfile == null
-                || !validateUser(userProfile, new UserProfile(login, password, login))) {
+        UsersDataSet userDataSet = accountService.getUserByLogin(login);
+        System.out.println(userDataSet);
+        System.out.println("login = " + login + " password = " + password);
+        if(userDataSet == null
+                || !validateUser(userDataSet, new UsersDataSet(login, password))) {
             sendResponse(resp, "Unauthorized", HttpServletResponse.SC_UNAUTHORIZED);
         } else {
-            String sessionId = req.getSession().getId();
-            accountService.addSession(sessionId, new UserProfile(login, password, login));
-            sendResponse(resp, "Authorized: " + login, HttpServletResponse.SC_OK);
+            sendResponse(resp, "Authorized: " + userDataSet.getName(), HttpServletResponse.SC_OK);
         }
     }
 
-    private boolean validateUser(UserProfile existingUser, UserProfile newUser) {
+    private boolean validateUser(UsersDataSet existingUser, UsersDataSet newUser) {
         return existingUser.equals(newUser);
     }
 
@@ -46,3 +47,4 @@ public class SignInServlet extends HttpServlet {
         resp.setStatus(statusCode);
     }
 }
+

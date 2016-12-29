@@ -2,6 +2,7 @@ package stepic_web_server.servlets;
 
 import stepic_web_server.accounts.AccountService;
 import stepic_web_server.accounts.UserProfile;
+import stepic_web_server.dataSets.UsersDataSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,9 +22,9 @@ public class SignUpServlet extends HttpServlet {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
 
-        UserProfile userProfile = accountService.getUserByLogin(login);
+        UsersDataSet userProfile = accountService.getUserByLogin(login);
         if(userProfile == null) {
-            accountService.addNewUser(new UserProfile(login, password, login));
+            accountService.addNewUser(new UsersDataSet(login, password));
         }
     }
 }

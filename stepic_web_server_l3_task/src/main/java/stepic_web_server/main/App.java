@@ -7,8 +7,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import stepic_web_server.accounts.AccountService;
-import stepic_web_server.accounts.UserProfile;
-import stepic_web_server.servlets.SessionsServlet;
+import stepic_web_server.dataSets.UsersDataSet;
 import stepic_web_server.servlets.SignInServlet;
 import stepic_web_server.servlets.SignUpServlet;
 import stepic_web_server.servlets.UsersServlet;
@@ -19,8 +18,8 @@ public class App
     {
         AccountService accountService = new AccountService();
 
-        accountService.addNewUser(new UserProfile("admin"));
-        accountService.addNewUser(new UserProfile("test"));
+        accountService.addNewUser(new UsersDataSet("admin"));
+        accountService.addNewUser(new UsersDataSet("test"));
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(new UsersServlet(accountService)), "/api/v1/users");
